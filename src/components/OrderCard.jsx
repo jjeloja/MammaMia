@@ -17,10 +17,18 @@ function OrderCard({ color, type, extra = null }) {
     image: mysteryIMG,
   };
 
+  const extraIngredientsList = Object.keys(BasicCard).filter(key => key !== color);
   const allRecipes = {
-    normale: () => [
+    normale1: () => [
       { name: ingredientData, type: "main" },
       ...Array(4).fill({ name: extraIngredientData, type: "extra" }),
+    ],
+    normale2: () => [
+    { name: ingredientData, type: 'main' },
+      ...extraIngredientsList.map(key => ({
+        name: BasicCard[key],
+        type: 'extra',
+      }))
     ],
     bombastica: () =>
       Array(15).fill({ name: mysteryIngredient, type: "mystery" }),
@@ -39,7 +47,7 @@ function OrderCard({ color, type, extra = null }) {
   const Pizza = () => {
     return (
       <div className='flex justify-center items-center w-full h-full'>
-        <img src={pizzaIMG} className="absolute top-0 left-0" />
+        <img src={pizzaIMG} className="absolute" />
         <img src={thisRecipe[0].name.image} className="h-2/11 w-auto absolute"/>
 
         <div className=' w-full h-full absolute'>
@@ -63,7 +71,7 @@ function OrderCard({ color, type, extra = null }) {
     return ( type === "bombastica" ? 
       <img
           src={FifteenplusIMG}
-          className='absolute bg-stone-100 flex items-center justify-center h-[40px] w-[40px] rounded-3xl border-2 border-solid border-stone-400'
+          className='absolute bg-stone-100 flex items-center justify-center h-[45px] w-[45px] rounded-3xl border-2 border-solid border-stone-400'
           style={{
             [vertical]: '5px',
             [horizontal]: "5px",
@@ -74,14 +82,14 @@ function OrderCard({ color, type, extra = null }) {
             return (
               <div
                 key={index}
-                className="absolute bg-stone-100 flex items-center justify-center h-[25px] w-[25px] rounded-3xl border-2 border-solid border-stone-400"
+                className="absolute bg-stone-100 flex items-center justify-center h-[26px] w-[26px] rounded-3xl border-2 border-solid border-stone-400"
                 style={{
                   [vertical]: ingredient.type === "main" ? "5px" : `${12 * (index - 1) + 5}px`,
                   [horizontal]: ingredient.type === "main" ? "31px" : "5px",
                   transform: vertical === "bottom" ? "scaleX(-1) scaleY(-1)" : undefined,
                 }}
               >
-                <img src={ingredient.name.image} className="h-[17px]" />
+                <img src={ingredient.name.image} className="h-[19px]" />
               </div>
           );
         })}
@@ -101,20 +109,20 @@ function OrderCard({ color, type, extra = null }) {
     >
       {faceUp && (
         <div className='flex flex-col h-4/5 w-4/5'>
-          <div className='h-1/4 flex jusify-between'>
+          <div className='h-1/3 flex jusify-between'>
             <div className='relative w-full'>
               <Corner vertical="top" horizontal="left" />
               <Corner vertical="top" horizontal="right" />
             </div>
           </div>
 
-          <div className="h-1/2 flex justify-center items-center">
-            <div className="w-[120px] h-[120px] relative">
+          <div className="h-1/3 flex justify-center items-center">
+            <div className="w-[140px] h-[140px] relative">
               <Pizza />
             </div>
           </div>
 
-          <div className="h-1/4 flex jusify-between">
+          <div className="h-1/3 flex jusify-between">
             <div className="relative w-full">
               <Corner vertical="bottom" horizontal="left" />
               <Corner vertical="bottom" horizontal="right" />
