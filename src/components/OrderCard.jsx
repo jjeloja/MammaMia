@@ -5,11 +5,11 @@ import mysteryIMG from "../assets/mystery.png";
 import FifteenplusIMG from "../assets/15plus.png";
 import pizzaIMG from "../assets/pizza.png";
 
-function OrderCard({ color, type, extra = null }) {
-  const [faceUp, setFaceUp] = useState(false);
+function OrderCard({ color, type, extra = null, isFaceUp = false }) {
+  const [faceUp, setFaceUp] = useState(isFaceUp);
   const ingredientData = BasicCard[color];
   const extraIngredientData = extra ? BasicCard[extra] : null;
-
+  
   const toggleFace = () => setFaceUp(!faceUp);
 
   const mysteryIngredient = {
@@ -47,7 +47,7 @@ function OrderCard({ color, type, extra = null }) {
   const Pizza = () => {
     return (
       <div className='flex justify-center items-center w-full h-full'>
-        <img src={pizzaIMG} className="absolute" />
+        <img src={pizzaIMG} className="absolute w-[125px]" />
         <img src={thisRecipe[0].name.image} className="h-2/11 w-auto absolute"/>
 
         <div className=' w-full h-full absolute'>
@@ -56,8 +56,8 @@ function OrderCard({ color, type, extra = null }) {
                 <img src={ingredient.type === "mystery" ? mysteryIMG : ingredient.name.image}
                 className='absolute w-2/11 h-auto -translate-1/2' 
                 style={{
-                  left: `${50 + Math.cos(index * (Math.PI * 2) / (thisRecipe.length - 1)) * 27}%`,
-                  top: `${50 + Math.sin(index * (Math.PI * 2) / (thisRecipe.length - 1)) * 27}%`,
+                  left: `${50 + Math.cos(index * (Math.PI * 2) / (thisRecipe.length - 1)) * 23}%`,
+                  top: `${50 + Math.sin(index * (Math.PI * 2) / (thisRecipe.length - 1)) * 23}%`,
                 }}/>
             );
           
@@ -84,7 +84,7 @@ function OrderCard({ color, type, extra = null }) {
                 key={index}
                 className="absolute bg-stone-100 flex items-center justify-center h-[26px] w-[26px] rounded-3xl border-2 border-solid border-stone-400"
                 style={{
-                  [vertical]: ingredient.type === "main" ? "5px" : `${12 * (index - 1) + 5}px`,
+                  [vertical]: ingredient.type === "main" ? "5px" : `${10 * (index - 1) + 5}px`,
                   [horizontal]: ingredient.type === "main" ? "31px" : "5px",
                   transform: vertical === "bottom" ? "scaleX(-1) scaleY(-1)" : undefined,
                 }}

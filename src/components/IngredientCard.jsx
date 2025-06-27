@@ -2,8 +2,8 @@ import { useState } from "react";
 import { BasicCard } from "./BasicCard";
 import MammaMiaLogo from "../assets/MammaMiaLogo.png";
 
-function IngredientCard({ color }) {
-  const [faceUp, setFaceUp] = useState(false);
+function IngredientCard({ color, isFaceUp = 'false' }) {
+  const [faceUp, setFaceUp] = useState(isFaceUp);
   const ingredientData = BasicCard[color];
 
   const toggleFace = () => setFaceUp(!faceUp);
