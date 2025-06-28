@@ -49,9 +49,9 @@ export function DeckProvider({ children }) {
     const deckAPI = {
         deck, 
         shuffle: () => {
-            const newDeck = deckRef.current;
+            const newDeck = [...deckRef.current];
             let currentIndex = newDeck.length;
-            while (currentIndex != 0) {
+            while (currentIndex !== 0) {
                 let randomIndex = Math.floor(Math.random() * currentIndex);
                 currentIndex--;
                 
@@ -60,21 +60,22 @@ export function DeckProvider({ children }) {
             updateDeck(newDeck);
         },
         drawTopCardFaceUp: () => {
-            const newDeck = deckRef.current;
+            const newDeck = [...deckRef.current];
             const drawn = newDeck.pop();
+            const card = cloneElement(drawn.card, { isFaceUp: true});
             updateDeck(newDeck);
-            return cloneElement(drawn.card, { isFaceUp: true });
+            return {...drawn, card: card};
         },
         clearDeck: () => {
             const newDeck = [];
             updateDeck(newDeck);
         },
         removeOvenCard: () => {
-            const newDeck = deckRef.current.filter(card => card.type != "oven");
+            const newDeck = deckRef.current.filter(card => card.type !== "oven");
             updateDeck(newDeck);
         },
         addCardToTop: (newType, newCard) => {
-            const newDeck = deckRef.current;
+            const newDeck = [...deckRef.current];
             newDeck.push({type: newType, card: newCard});
             updateDeck(newDeck);
         },
@@ -82,6 +83,23 @@ export function DeckProvider({ children }) {
             const newDeck = deckRef.current.filter(card => card.type !== typeToRemove);
             updateDeck(newDeck);
         },
+        showCard: (drawnCard) => {
+            return drawnCard.card;
+        },
+        removeIngredient: (color) => {
+            const deck = deckRef.current;
+            const index = deck.findIndex(card => card.type === 'ingredient' && card.card.props.color === color);
+            if (index !== -1) {
+                const newDeck = [...deck.slice(0, index), ...deck.slice(index + 1)];
+                updateDeck(newDeck);
+            }
+        },
+        removeColorOrders: (color) => {
+            const returnDeck = deckRef.current.filter(card => card.type === 'order' && card.card.props.color === color).map(card => card.card);
+            const newDeck = deckRef.current.filter(card => !(card.type === 'order' && card.card.props.color === color));
+            updateDeck(newDeck);
+            return returnDeck;
+        }
     }
 
     return(
