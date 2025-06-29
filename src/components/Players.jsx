@@ -43,6 +43,12 @@ export function PlayersProvider({ children }) {
                 if (player.isPlaying) colors.push(player.color);
             })
             return colors;
+        },
+        returnHand: (color) => {
+            return players.find(player => player.color === color).hand; 
+        },
+        returnOrderPile: (color) => {
+            return players.find(player => player.color === color).orderPile;
         }
     }
 

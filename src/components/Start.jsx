@@ -11,7 +11,7 @@ function Start({onStart}) {
             </div>
             <div className='flex justify-center items-center flex-col text-white w-1/2 '>
                 <div>Choose which players are active:</div>
-                <div className='w-full mt-2 mb-7 flex justify-center'> 
+                <div className='w-full mt-2 mb-7 flex justify-center text-black'> 
                     <button onClick={() => switchPlayerActivity('red')} className='p-3 m-2 w-30 bg-red-500 rounded-3xl hover:bg-red-400'>Red is {returnPlayer('red').isPlaying ? 'playing' : 'not playing'}</button>
                     <button onClick={() => switchPlayerActivity('yellow')} className='p-3 m-2 w-30 bg-yellow-500 rounded-3xl hover:bg-yellow-200'>Yellow is {returnPlayer('yellow').isPlaying ? 'playing' : 'not playing'}</button>
                     <button onClick={() => switchPlayerActivity('brown')} className='p-3 m-2 w-30 bg-amber-900 rounded-3xl hover:bg-amber-700'>Brown is {returnPlayer('brown').isPlaying ? 'playing' : 'not playing'}</button>

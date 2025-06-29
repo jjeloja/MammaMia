@@ -3,8 +3,8 @@ import { usePlayers } from './Players';
 import { useDeck } from './Deck';
 
 function Round() {
-    const { returnActiveNumberOfPlayers, returnPlayer, updateOrderPile, returnActiveColors, updateHand } = usePlayers();
-    const { deck, shuffle, drawTopCardFaceUp, clearDeck, removeOvenCard, addCardToTop, removeAllCardsOfType, showCard, removeIngredient, removeColorOrders} = useDeck(); 
+    const { returnActiveNumberOfPlayers, returnPlayer, updateOrderPile, returnActiveColors, updateHand, returnHand, returnOrderPile } = usePlayers();
+    const { deck, shuffle, drawTopCardFaceUp, removeOvenCard, showCard, removeIngredient, removeColorOrders} = useDeck(); 
     const hasRun = React.useRef(false);
     const [drawnCard, setDrawnCard] = React.useState(null);
     const [length, setLength] = React.useState(deck.length);
@@ -36,14 +36,46 @@ function Round() {
 
     const createInitialHands = () => {
         const activeColors = returnActiveColors();
+        const tempHands = {};
+
+        activeColors.forEach(color => {
+            const player = returnPlayer(color);
+            tempHands[color] = [...player.hand];
+        });
+
+        // Add 6 cards per player
         for (let c = 0; c < 6; c++) {
-            activeColors.map(color => {
-                const player = returnPlayer(color);
-                const hand = [...player.hand, drawTopCardFaceUp()];
-                console.log(hand);
-                updateHand(color, hand);  
-            })
+            activeColors.forEach(color => {
+                const { card } = drawTopCardFaceUp();
+                tempHands[color].push(card);
+            });
         }
+
+        // Update all hands at once
+        activeColors.forEach(color => {
+            updateHand(color, tempHands[color]);
+        });
+    }
+
+    const renderHand = (color) => {
+        const hand = returnHand(color);
+        console.log(hand)
+        return (
+            <div className='flex w-full bg-blue-500 h-full relative w-full'>
+                {hand.map((card, index) => (
+                    <div 
+                        key={index} 
+                        className='absolute -translate-1/2'
+                        style={{
+                            left: `${50 + Math.cos((120 - ((60 / (hand.length + 1))) * (index + 1)) * (Math.PI / 180)) * 50}%`,
+                            top: `${100 - Math.sin((120 - ((60 / (hand.length + 1))) * (index + 1)) * (Math.PI / 180)) * 50}%`,
+                        }}
+                    >
+                        {card}
+                    </div>
+                ))}
+            </div>
+        );
     }
 
     React.useEffect(() => {
@@ -61,18 +93,19 @@ function Round() {
         setLength(deck.length);
     }, [deck]);
 
+
     return(
         <>
-            {drawnCard && showCard(drawnCard)}
-            <div>
-                Active Players Amount:
-                {returnActiveNumberOfPlayers()}
+            <div className='bg-red-100 h-full flex h-screen '>
+                    <div className='bg-red-500 w-1/2 flex flex-col justify-center'>
+                        <div className='bg-purple-100'>{returnActiveColors()[0]}'s Hand:</div> 
+                        <div className='bg-stone-900 w-full h-full'>{renderHand(returnActiveColors()[0])}</div>
+                    </div>
+                    <div className='bg-green-500 w-1/2 flex flex-wrap'>
+                        {returnActiveColors()[0]}'s Order Pile:
+                        {returnOrderPile(returnActiveColors()[0])}
+                    </div>
             </div>
-            <div>
-                Length:
-                {length}
-            </div>
-            
         </>
     );
 }
