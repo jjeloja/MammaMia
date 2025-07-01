@@ -5,12 +5,14 @@ import mysteryIMG from "../assets/mystery.png";
 import FifteenplusIMG from "../assets/15plus.png";
 import pizzaIMG from "../assets/pizza.png";
 
-function OrderCard({ color, type, extra = null, isFaceUp = false }) {
+function OrderCard({ color, type, extra = null, isFaceUp = false, canFlip = true }) {
   const [faceUp, setFaceUp] = useState(isFaceUp);
   const ingredientData = BasicCard[color];
   const extraIngredientData = extra ? BasicCard[extra] : null;
   
-  const toggleFace = () => setFaceUp(!faceUp);
+  const toggleFace = () => {
+    if (canFlip) setFaceUp(!faceUp)
+  };
 
   const mysteryIngredient = {
     personalIngredient: "mystery",
