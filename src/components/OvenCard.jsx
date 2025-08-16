@@ -3,7 +3,7 @@ import { BasicCard } from "./BasicCard";
 import MammaMiaLogo from "../assets/MammaMiaLogo.png";
 import ovenIMG from "../assets/oven.png";
 
-function OvenCard({isFaceUp = 'false', canFlip = false}) {
+function OvenCard({isFaceUp = false, canFlip = false}) {
   const [faceUp, setFaceUp] = useState(isFaceUp);
 
   const toggleFace = () => {

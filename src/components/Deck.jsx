@@ -1,4 +1,4 @@
-import { useState, createContext, useContext, useRef, cloneElement } from "react";
+import React, { useState, createContext, useContext, useRef, useMemo } from "react";
 import { BasicCard } from "./BasicCard";
 import IngredientCard from "./IngredientCard";
 import OrderCard from "./OrderCard";
@@ -8,103 +8,76 @@ export const Deck = createContext();
 export const useDeck = () => useContext(Deck);
 
 function createInitialDeck() {
-    const cards = [];
+  const cards = [];
+  cards.push({ type: "oven", card: <OvenCard /> });
 
-    // adds 1 oven card
-    cards.push({type: 'oven', card: <OvenCard />});
+  Object.keys(BasicCard).forEach(color => {
+    for (let i = 0; i < 13; i++) {
+      cards.push({ type: "ingredient", card: <IngredientCard color={color} /> });
+    }
+  });
 
-    // adds 13 of each ingredient type
-    Object.keys(BasicCard).map((color) => {
-        for (let i = 0; i < 13; i++) {
-            cards.push({type: 'ingredient', card: <IngredientCard color={color}/> });
-        }
-    })
+  const recipeList = ["normale1", "normale2", "bombastica", "monotoni", "minimale"];
+  Object.keys(BasicCard).forEach(color => {
+    const others = Object.keys(BasicCard).filter(k => k !== color);
+    for (let j = 0; j < 4; j++) {
+      cards.push({ type: "order", card: <OrderCard color={color} type="normale1" extra={others[j]} /> });
+    }
+    recipeList.slice(1).forEach(type => {
+      cards.push({ type: "order", card: <OrderCard color={color} type={type} /> });
+    });
+  });
 
-    // adds 8 order cards of each ingredient type
-    const recipeList = ['normale1', 'normale2', 'bombastica', 'monotoni', 'minimale'];
-    const ingredientList = Object.keys(BasicCard)
-    Object.keys(BasicCard).map((color) => {
-        const extraIngredientsList = Object.keys(BasicCard).filter(key => key !== color);            
-        for (let j = 0; j < 4; j++) {
-            cards.push({type: 'order', card: <OrderCard color={color} type='normale1' extra={extraIngredientsList[j]}/>})
-        }
-        cards.push({type: 'order', card: <OrderCard color={color} type={recipeList[1]} /> })
-        cards.push({type: 'order', card: <OrderCard color={color} type={recipeList[2]} /> })
-        cards.push({type: 'order', card: <OrderCard color={color} type={recipeList[3]} /> })
-        cards.push({type: 'order', card: <OrderCard color={color} type={recipeList[4]} /> })
-    })
-
-    return cards;
+  return cards;
 }
 
 export function DeckProvider({ children }) {
-    const [deck, setDeck] = useState(createInitialDeck());
-    const deckRef = useRef(deck);
+  const [deck, setDeck] = useState(createInitialDeck());
+  const deckRef = useRef(deck);
 
-    const updateDeck= (newDeck) => {
-        deckRef.current = newDeck;
-        setDeck(newDeck);
-    };
+  const updateDeck = (newDeck) => {
+    deckRef.current = newDeck;
+    setDeck([...newDeck]); 
+  };
 
-    const deckAPI = {
-        deck, 
-        shuffle: () => {
-            const newDeck = [...deckRef.current];
-            let currentIndex = newDeck.length;
-            while (currentIndex !== 0) {
-                let randomIndex = Math.floor(Math.random() * currentIndex);
-                currentIndex--;
-                
-                [newDeck[currentIndex], newDeck[randomIndex]] = [newDeck[randomIndex], newDeck[currentIndex]];
-            }
-            updateDeck(newDeck);
-        },
-        drawTopCardFaceUp: () => {
-            const newDeck = [...deckRef.current];
-            const drawn = newDeck.pop();
-            const card = cloneElement(drawn.card, { isFaceUp: true});
-            updateDeck(newDeck);
-            return {...drawn, card: card};
-        },
-        clearDeck: () => {
-            const newDeck = [];
-            updateDeck(newDeck);
-        },
-        removeOvenCard: () => {
-            const newDeck = deckRef.current.filter(card => card.type !== "oven");
-            updateDeck(newDeck);
-        },
-        addCardToTop: (newType, newCard) => {
-            const newDeck = [...deckRef.current];
-            newDeck.push({type: newType, card: newCard});
-            updateDeck(newDeck);
-        },
-        removeAllCardsOfType: (typeToRemove) => {
-            const newDeck = deckRef.current.filter(card => card.type !== typeToRemove);
-            updateDeck(newDeck);
-        },
-        showCard: (drawnCard) => {
-            return drawnCard.card;
-        },
-        removeIngredient: (color) => {
-            const deck = deckRef.current;
-            const index = deck.findIndex(card => card.type === 'ingredient' && card.card.props.color === color);
-            if (index !== -1) {
-                const newDeck = [...deck.slice(0, index), ...deck.slice(index + 1)];
-                updateDeck(newDeck);
-            }
-        },
-        removeColorOrders: (color) => {
-            const returnDeck = deckRef.current.filter(card => card.type === 'order' && card.card.props.color === color).map(card => card.card);
-            const newDeck = deckRef.current.filter(card => !(card.type === 'order' && card.card.props.color === color));
-            updateDeck(newDeck);
-            return returnDeck;
-        }
+  const deckAPI = useMemo(() => ({
+    deck,
+    shuffle: () => {
+      const shuffled = [...deckRef.current];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      updateDeck(shuffled);
+    },
+    drawTopCardFaceUp: () => {
+      const copy = [...deckRef.current];
+      const drawn = copy.pop();
+      updateDeck(copy);
+      return { ...drawn, card: React.cloneElement(drawn.card, { isFaceUp: true }) };
+    },
+    clearDeck: () => updateDeck([]),
+    removeOvenCard: () => updateDeck(deckRef.current.filter(c => c.type !== "oven")),
+    addCardToTop: (type, card) => updateDeck([...deckRef.current, { type, card }]),
+    removeAllCardsOfType: (type) => updateDeck(deckRef.current.filter(c => c.type !== type)),
+    showCard: (cardObj) => cardObj.card,
+    removeIngredient: (color) => {
+      const i = deckRef.current.findIndex(c => c.type === "ingredient" && c.card.props.color === color);
+      if (i >= 0) updateDeck([...deckRef.current.slice(0, i), ...deckRef.current.slice(i + 1)]);
+    },
+    removeColorOrders: (color) => {
+      const toReturn = deckRef.current
+        .filter(c => c.type === "order" && c.card.props.color === color)
+        .map(c => ({
+          color: c.card.props.color,
+          type: c.card.props.type,
+          extra: c.card.props.extra ?? null
+        }));
+
+      updateDeck(deckRef.current.filter(c => !(c.type === "order" && c.card.props.color === color)));
+      return toReturn;
     }
+  }), [deck]);
 
-    return(
-        <Deck value={deckAPI}>
-            {children}
-        </Deck>
-    );
+  return <Deck.Provider value={deckAPI}>{children}</Deck.Provider>;
 }

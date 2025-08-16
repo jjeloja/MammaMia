@@ -2,7 +2,7 @@ import { useState } from "react";
 import { BasicCard } from "./BasicCard";
 import MammaMiaLogo from "../assets/MammaMiaLogo.png";
 
-function IngredientCard({ color, isFaceUp = 'false', canFlip = false }) {
+function IngredientCard({ color, isFaceUp = false, canFlip = false }) {
   const [faceUp, setFaceUp] = useState(isFaceUp);
   const ingredientData = BasicCard[color];
 
@@ -13,7 +13,7 @@ function IngredientCard({ color, isFaceUp = 'false', canFlip = false }) {
   return (
     <div
       onClick={toggleFace}
-      className="w-[200px] h-[300px] flex flex-col justify-center items-center border-3 border-solid border-stone-400 rounded-3xl bg-stone-100"
+      className="w-[140px] h-[210px] flex flex-col justify-center items-center border-2 border-solid border-stone-400 rounded-3xl bg-stone-100"
     >
       {faceUp ? (
         <div className="flex flex-col h-4/5 w-4/5">
@@ -21,31 +21,31 @@ function IngredientCard({ color, isFaceUp = 'false', canFlip = false }) {
             <img
               src={ingredientData.image}
               alt="top-left"
-              className="w-[40px]"
+              className="w-[28px]"
             />
             <img
               src={ingredientData.image}
               alt="top-right"
-              className="w-[40px]"
+              className="w-[28px]"
             />
           </div>
           <div className="h-3/5 flex justify-center items-center">
             <img
               src={ingredientData.image}
               alt="center"
-              className="w-[100px]"
+              className="w-[70px]"
             />
           </div>
           <div className="h-1/5 flex justify-between items-center">
             <img
               src={ingredientData.image}
               alt="bottom-left"
-              className="w-[40px]"
+              className="w-[28px]"
             />
             <img
               src={ingredientData.image}
               alt="bottom-right"
-              className="w-[40px]"
+              className="w-[28px]"
             />
           </div>
         </div>

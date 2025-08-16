@@ -10,9 +10,7 @@ function OrderCard({ color, type, extra = null, isFaceUp = false, canFlip = true
   const ingredientData = BasicCard[color];
   const extraIngredientData = extra ? BasicCard[extra] : null;
   
-  const toggleFace = () => {
-    if (canFlip) setFaceUp(!faceUp)
-  };
+  const toggleFace = () => { if (canFlip) setFaceUp(!faceUp) };
 
   const mysteryIngredient = {
     personalIngredient: "mystery",
@@ -49,20 +47,22 @@ function OrderCard({ color, type, extra = null, isFaceUp = false, canFlip = true
   const Pizza = () => {
     return (
       <div className='flex justify-center items-center w-full h-full'>
-        <img src={pizzaIMG} className="absolute w-[125px]" />
-        <img src={thisRecipe[0].name.image} className="h-2/11 w-auto absolute"/>
+        <img src={pizzaIMG} className="absolute w-[90px]" />
+        <img src={thisRecipe[0].name.image} className="h-[18px] w-auto absolute"/>
 
         <div className=' w-full h-full absolute'>
           {thisRecipe.slice(1).map((ingredient, index) => {
             return (
-                <img src={ingredient.type === "mystery" ? mysteryIMG : ingredient.name.image}
-                className='absolute w-2/11 h-auto -translate-1/2' 
+              <img
+                key={index}
+                src={ingredient.type === "mystery" ? mysteryIMG : ingredient.name.image}
+                className='absolute w-[18px] h-auto -translate-1/2' 
                 style={{
-                  left: `${50 + Math.cos(index * (Math.PI * 2) / (thisRecipe.length - 1)) * 23}%`,
-                  top: `${50 + Math.sin(index * (Math.PI * 2) / (thisRecipe.length - 1)) * 23}%`,
-                }}/>
+                  left: `${50 + Math.cos(index * (Math.PI * 2) / (thisRecipe.length - 1)) * 18}%`,
+                  top: `${50 + Math.sin(index * (Math.PI * 2) / (thisRecipe.length - 1)) * 18}%`,
+                }}
+              />
             );
-          
           })}
         </div>
       </div>
@@ -73,7 +73,7 @@ function OrderCard({ color, type, extra = null, isFaceUp = false, canFlip = true
     return ( type === "bombastica" ? 
       <img
           src={FifteenplusIMG}
-          className='absolute bg-stone-100 flex items-center justify-center h-[45px] w-[45px] rounded-3xl border-2 border-solid border-stone-400'
+          className='absolute bg-stone-100 flex items-center justify-center h-[32px] w-[32px] rounded-3xl border-2 border-solid border-stone-400'
           style={{
             [vertical]: '5px',
             [horizontal]: "5px",
@@ -84,14 +84,14 @@ function OrderCard({ color, type, extra = null, isFaceUp = false, canFlip = true
             return (
               <div
                 key={index}
-                className="absolute bg-stone-100 flex items-center justify-center h-[26px] w-[26px] rounded-3xl border-2 border-solid border-stone-400"
+                className="absolute bg-stone-100 flex items-center justify-center h-[18px] w-[18px] rounded-3xl border-2 border-solid border-stone-400"
                 style={{
                   [vertical]: ingredient.type === "main" ? "5px" : `${10 * (index - 1) + 5}px`,
                   [horizontal]: ingredient.type === "main" ? "31px" : "5px",
                   transform: vertical === "bottom" ? "scaleX(-1) scaleY(-1)" : undefined,
                 }}
               >
-                <img src={ingredient.name.image} className="h-[19px]" />
+                <img src={ingredient.name.image} className="h-[13px]" />
               </div>
           );
         })}
@@ -102,7 +102,7 @@ function OrderCard({ color, type, extra = null, isFaceUp = false, canFlip = true
   return (
     <div
       onClick={toggleFace}
-      className="w-[200px] h-[300px] flex flex-col justify-center items-center border-3 border-solid border-stone-400 rounded-3xl bg-stone-100 bg-no-repeat bg-center"
+      className="w-[140px] h-[210px] flex flex-col justify-center items-center border-2 border-solid border-stone-400 rounded-3xl bg-stone-100 bg-no-repeat bg-center"
       style={{
         backgroundImage: `url(${ginghamPattern}), linear-gradient(${ingredientData.colorCode}, ${ingredientData.colorCode})`,
         backgroundBlendMode: "hard-light, normal",
